@@ -1,5 +1,6 @@
 //Declaración de la clase nodo
 //Clase que implementará un nodo de un arbol
+#pragma once
 
 #include<iostream>
 #include<vector>
@@ -7,7 +8,7 @@
 
 class nodo_arbol{
 
-private:
+ private:
 
     unsigned int ID;
     nodo_arbol* padre;
@@ -26,14 +27,14 @@ private:
     unsigned int get_ID(void);
     nodo_arbol* get_padre(void);
     unsigned int get_coste(void);
-    unsigned int get_profundida(void);
+    unsigned int get_profundidad(void);
     float get_heuristica(void);
 
 
     void set_ID(unsigned int);
     void set_padre(nodo_arbol*);
     void set_coste(unsigned int);
-    void set_profundida(unsigned int);
+    void set_profundidad(unsigned int);
     void set_heuristica(float);
 
 
