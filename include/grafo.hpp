@@ -20,8 +20,12 @@ class grafo{
 
      grafo(void);
      grafo(std::ifstream&);
+     grafo(const grafo&);
 
      ~grafo();
+
+     unsigned int get_numero_nodos() const;
+     std::vector<std::vector<std::pair<unsigned int,double> > > get_matriz() const;
 
      std::ostream& write(std::ostream&);
 

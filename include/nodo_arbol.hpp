@@ -14,13 +14,13 @@ class nodo_arbol{
     nodo_arbol* padre;
     unsigned int coste;
     unsigned int profundidad;
-    float heuristica;
+    bool visitado;
 
   public:
 
     nodo_arbol(void);
     nodo_arbol(unsigned int);
-    nodo_arbol(unsigned int, nodo_arbol*,unsigned int, unsigned int, float);
+    nodo_arbol(unsigned int, nodo_arbol*,unsigned int, unsigned int);
 
     ~nodo_arbol();
 
@@ -28,14 +28,12 @@ class nodo_arbol{
     nodo_arbol* get_padre(void);
     unsigned int get_coste(void);
     unsigned int get_profundidad(void);
-    float get_heuristica(void);
-
+    bool get_visitado(void);
 
     void set_ID(unsigned int);
     void set_padre(nodo_arbol*);
     void set_coste(unsigned int);
     void set_profundidad(unsigned int);
-    void set_heuristica(float);
-
+    void set_visitado(bool);
 
 };

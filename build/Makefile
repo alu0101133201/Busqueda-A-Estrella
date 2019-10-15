@@ -6,7 +6,7 @@ ODIR=../src
 
 .PHONY: all
 
-_OBJ = nodo_arbol.o grafo.o Arbol.o A_.o main.o
+_OBJ = nodo_arbol.o grafo.o  grafo_con_busqueda.o main.o
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 
 
@@ -18,13 +18,10 @@ $(ODIR)/nodo_arbol.o: $(ODIR)/nodo_arbol.cpp $(IDIR)/nodo_arbol.hpp
 $(ODIR)/grafo.o: $(ODIR)/grafo.cpp $(IDIR)/grafo.hpp
 	$(CC) -c -o $@ $< $(CFLAGS)
 
-$(ODIR)/Arbol.o: $(ODIR)/Arbol.cpp $(IDIR)/Arbol.hpp $(IDIR)/nodo_arbol.hpp
+$(ODIR)/grafo_con_busqueda.o: $(ODIR)/grafo_con_busqueda.cpp $(IDIR)/grafo_con_busqueda.hpp $(IDIR)/nodo_arbol.hpp $(IDIR)/grafo.hpp
 	$(CC) -c -o $@ $< $(CFLAGS)
 
-$(ODIR)/A_.o: $(ODIR)/A_.cpp $(IDIR)/A_.hpp $(IDIR)/Arbol.hpp $(IDIR)/nodo_arbol.hpp $(IDIR)/grafo.hpp
-	$(CC) -c -o $@ $< $(CFLAGS)
-
-$(ODIR)/main.o: $(ODIR)/main.cpp $(IDIR)/A_.hpp $(IDIR)/Arbol.hpp $(IDIR)/nodo_arbol.hpp $(IDIR)/grafo.hpp 
+$(ODIR)/main.o: $(ODIR)/main.cpp $(IDIR)/grafo_con_busqueda.hpp $(IDIR)/nodo_arbol.hpp $(IDIR)/grafo.hpp
 	$(CC) -c -o $@ $< $(CFLAGS)
 
 

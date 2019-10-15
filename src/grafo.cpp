@@ -21,23 +21,39 @@ grafo::grafo(std::ifstream& file){
         meter_valor(i,j,costo_tmp);
 
     }
-
   }
-
 }
 
 
+grafo::grafo(const grafo &grafo_a_copiar):
+  numero_nodos(grafo_a_copiar.get_numero_nodos()),
+  matriz(grafo_a_copiar.get_matriz())
+  {}
+
+
 grafo::~grafo(){};
+
+
+unsigned int grafo::get_numero_nodos(void) const{
+  return numero_nodos;
+}
+
+std::vector<std::vector<std::pair<unsigned int, double> > > grafo::get_matriz(void) const{
+  return(matriz);
+}
 
 
 
 std::ostream& grafo::write(std::ostream& os){
 
   for(int i = 0; i < numero_nodos; i++){
+
     os << "\n nodo " << i+1 << ":\t";
 
     for(int j = 0; j < matriz[i].size();j++){
+
       os << std::setw(5) << " [" << matriz[i][j].first + 1 << "," << matriz[i][j].second << "] " << "\t";
+
     }
     os << "\n";
   }
@@ -55,6 +71,5 @@ void grafo::meter_valor(unsigned int i, unsigned int j, double coste){
 
   tmp.first = i;
   matriz[j].push_back(tmp);
-
 
 }
