@@ -43,6 +43,16 @@ std::vector<std::vector<std::pair<unsigned int, double> > > grafo::get_matriz(vo
 }
 
 
+std::vector<std::pair<unsigned int, double> > grafo::get_data(unsigned int nodo) const{
+  return(matriz[nodo]);
+}
+
+
+
+
+
+
+
 
 std::ostream& grafo::write(std::ostream& os){
 

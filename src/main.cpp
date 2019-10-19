@@ -5,12 +5,23 @@ Programa principal. Práctica 01 - IA
 #include<iostream>
 #include<fstream>
 
-#include"grafo.hpp"
+#include "grafo.hpp"
 #include "grafo_con_busqueda.hpp"
 
 
-void leer_heuristica(std::vector<float> datos_heuristica, std::ifstream& fichero_heuristica){
+void leer_heuristica(std::vector<float>& datos_heuristica, std::ifstream& fichero_heuristica){
 
+  int nodos;
+  float tmp;
+
+  fichero_heuristica >> nodos;
+  datos_heuristica.resize(nodos);
+
+  for(int i = 0; i < nodos; i++){
+
+    fichero_heuristica >> tmp;
+    datos_heuristica[i] = tmp;
+  }
 
 }
 
@@ -40,7 +51,11 @@ int main(int argc, char* argv[]){
 
   if(fichero_grafo.is_open() && fichero_heuristica.is_open()){
 
+
+    std::cout <<  "--PRÁCTICA 01 BÚSQUEDA A ESTRELLA - IA\n Sergio Guerra Arencibia\n";
+
     std::vector<float> heuristica;
+    solucion solucion_;
 
     grafo grafo_leido(fichero_grafo);
     leer_heuristica(heuristica, fichero_heuristica);
@@ -48,17 +63,7 @@ int main(int argc, char* argv[]){
     grafo_con_busqueda prueba(grafo_leido);
 
 
-
-
-    grafo_leido.write(std::cout);
-
-
-
-
-
-
-
-
+    prueba.busqueda_A_estrella(1,3,heuristica,solucion_);
 
 
 

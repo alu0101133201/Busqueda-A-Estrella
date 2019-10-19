@@ -28,9 +28,9 @@ class grafo_con_busqueda{
 
     grafo grafo_;
 
-    std::vector<float> heuristica;
-    std::vector<nodo_arbol> hojas;
-
+    std::vector<unsigned int> hojas;
+    //Vector que almacenará los costes mínimos a cada uno de los nodos con el fin de ahorrar meter nodos a los que se han encontrado caminos mejores.
+    std::vector<unsigned int> costes_nodos_provisionales;
 
 
   public:
@@ -40,6 +40,6 @@ class grafo_con_busqueda{
 
     ~grafo_con_busqueda();
 
-    solucion busqueda_A_estrella(unsigned int, unsigned int, std::vector<float>);
+    void busqueda_A_estrella(unsigned int, unsigned int, std::vector<float>&, solucion&);
 
 };

@@ -27,6 +27,8 @@ class grafo{
      unsigned int get_numero_nodos() const;
      std::vector<std::vector<std::pair<unsigned int,double> > > get_matriz() const;
 
+     std::vector<std::pair<unsigned int, double> > get_data(unsigned int) const;
+
      std::ostream& write(std::ostream&);
 
 };
