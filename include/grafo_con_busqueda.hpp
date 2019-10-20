@@ -4,6 +4,8 @@
 #pragma once
 
 #include <vector>
+#include <iomanip>
+#include <list>
 
 #include "nodo_arbol.hpp"
 #include "grafo.hpp"
@@ -28,10 +30,14 @@ class grafo_con_busqueda{
 
     grafo grafo_;
 
-    std::vector<unsigned int> hojas;
-    //Vector que almacenará los costes mínimos a cada uno de los nodos con el fin de ahorrar meter nodos a los que se han encontrado caminos mejores.
-    std::vector<unsigned int> costes_nodos_provisionales;
+    std::list<nodo_arbol*> hojas;
 
+    //Vector que almacenará los costes mínimos a cada uno de los nodos con el fin de ahorrar meter nodos a los que se han encontrado caminos mejores.
+    std::vector<nodo_arbol*> costes_nodos_provisionales;
+
+    bool ya_insertado_en_rama(nodo_arbol*, int);
+
+    nodo_arbol* generar(unsigned int, nodo_arbol*, float, int);
 
   public:
 

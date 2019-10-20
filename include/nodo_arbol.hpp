@@ -3,6 +3,7 @@
 #pragma once
 
 #include<iostream>
+#include<cfloat>
 #include<vector>
 #include<utility>
 
@@ -10,30 +11,27 @@ class nodo_arbol{
 
  private:
 
-    unsigned int ID;
+    int ID;
     nodo_arbol* padre;
-    unsigned int coste;
-    unsigned int profundidad;
-    bool visitado;
+    float coste;
+    int profundidad;
 
   public:
 
     nodo_arbol(void);
-    nodo_arbol(unsigned int);
-    nodo_arbol(unsigned int, nodo_arbol*,unsigned int, unsigned int);
+    nodo_arbol(int);
+    nodo_arbol(int, nodo_arbol*,float, int);
 
     ~nodo_arbol();
 
-    unsigned int get_ID(void);
+    int get_ID(void);
     nodo_arbol* get_padre(void);
-    unsigned int get_coste(void);
-    unsigned int get_profundidad(void);
-    bool get_visitado(void);
+    float get_coste(void);
+    int get_profundidad(void);
 
-    void set_ID(unsigned int);
+    void set_ID(int);
     void set_padre(nodo_arbol*);
-    void set_coste(unsigned int);
-    void set_profundidad(unsigned int);
-    void set_visitado(bool);
+    void set_coste(float);
+    void set_profundidad(int);
 
 };

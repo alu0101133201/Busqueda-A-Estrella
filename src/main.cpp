@@ -25,6 +25,11 @@ void leer_heuristica(std::vector<float>& datos_heuristica, std::ifstream& ficher
 
 }
 
+void inicializar_solucion(solucion& solucion_){
+  solucion_.coste = 0;
+}
+
+
 
 int main(int argc, char* argv[]){
 
@@ -57,13 +62,16 @@ int main(int argc, char* argv[]){
     std::vector<float> heuristica;
     solucion solucion_;
 
+
+
+    inicializar_solucion(solucion_);
     grafo grafo_leido(fichero_grafo);
     leer_heuristica(heuristica, fichero_heuristica);
 
     grafo_con_busqueda prueba(grafo_leido);
 
 
-    prueba.busqueda_A_estrella(1,3,heuristica,solucion_);
+    prueba.busqueda_A_estrella(1,5,heuristica,solucion_);
 
 
 
