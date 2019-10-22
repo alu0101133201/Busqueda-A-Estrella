@@ -3,6 +3,7 @@ Programa principal. Práctica 01 - IA
 */
 
 #include<iostream>
+#include<string>
 #include<fstream>
 
 #include "grafo.hpp"
@@ -25,9 +26,68 @@ void leer_heuristica(std::vector<float>& datos_heuristica, std::ifstream& ficher
 
 }
 
+
+
+
 void inicializar_solucion(solucion& solucion_){
   solucion_.coste = 0;
+  solucion_.camino.clear();
 }
+
+
+
+
+
+void imprimir_solucion(std::ostream& os, solucion& solucion_){
+
+  os << "Solución de la búsqueda A estrella\nCoste:\t";
+  os << solucion_.coste;
+
+  os << "\nCamino:\t";
+  for(int i = 0; i < solucion_.camino.size() ; i++)
+    os << "(" << solucion_.camino[i] << ") ";
+
+  os << "\n\n";
+
+}
+
+//Función que realiza la búsqueda y carga el resultado en solucion. Devuelve true si no ha habido problemas
+
+bool Realizar_busqueda(std::ifstream& pgrafo,std::ifstream& pheuristica, solucion& solucion_){
+
+
+    if(pgrafo.is_open() && pheuristica.is_open()) {
+
+        int inicial, final;
+        inicializar_solucion(solucion_);
+
+        std::vector<float> heuristica;
+        grafo grafo_leido(pgrafo);
+
+       leer_heuristica(heuristica, pheuristica);
+       grafo_con_busqueda grafo_A_estrella(grafo_leido);
+
+
+        std::cout << "Introduzca el nodo inicial y el final:\t";
+        std::cin >> inicial >> final;
+
+        if ((inicial > 0 && inicial <= grafo_A_estrella.get_numero_nodos()) && (final > 0 && final <= grafo_A_estrella.get_numero_nodos())){
+
+            grafo_A_estrella.busqueda_A_estrella(inicial, final, heuristica, solucion_);
+            return true;
+        }
+         else
+             std::cout << "\nIntroduzca un nodo inicial y final válido\n";
+         }
+    else{
+
+        std::cerr << "Error abriendo ficheros\n";
+        return false;
+    }
+
+}
+
+
 
 
 
@@ -54,66 +114,54 @@ int main(int argc, char* argv[]){
   std::ifstream fichero_grafo(argv[1]);
   std::ifstream fichero_heuristica(argv[2]);
 
-  if(fichero_grafo.is_open() && fichero_heuristica.is_open()) {
+  solucion solucion_;
+  int opcion;
+
+  std::cout << "--PRÁCTICA 01 BÚSQUEDA A ESTRELLA - IA\n Sergio Guerra Arencibia\n";
+
+  if (Realizar_busqueda(fichero_grafo,fichero_heuristica,solucion_) )
+     imprimir_solucion(std::cout, solucion_);
 
 
-      std::cout << "--PRÁCTICA 01 BÚSQUEDA A ESTRELLA - IA\n Sergio Guerra Arencibia\n";
+  fichero_grafo.close();
+  fichero_heuristica.close();
 
-      std::vector<float> heuristica;
-      int opcion;
-      solucion solucion_;
+    std::cout << "Introduzca un 1 para realizar otra búsqueda, un 0 para salir:\t";
+    std::cin >> opcion;
 
-      grafo grafo_leido(fichero_grafo);
-      leer_heuristica(heuristica, fichero_heuristica);
+   if(opcion == 0)
+       return 0;
 
-      grafo_con_busqueda prueba(grafo_leido);
-      int inicial, final;
+   //---------------------------------------------------------------------------------------------------
 
-      inicializar_solucion(solucion_);
+    std::cout << "\n---FASE DE INTRODUCCIÓN MANUAL DE FICHEROS\n";
 
-      std::cout << "Introduzca el nodo inicial y el final:\t";
-      std::cin >> inicial >> final;
+    while (opcion != 0) {
 
-      if ((inicial > 0 && inicial <= prueba.get_numero_nodos()) && (final > 0 && final <= prueba.get_numero_nodos()))
-          prueba.busqueda_A_estrella(1, 9, heuristica, solucion_);
-      else
-          std::cout << "\nIntroduzca un nodo inicial y final válido\n";
+        std::string fichero;
 
-      std::cout << "Introduzca un 1 para realizar otra búsqueda, un 0 para salir:\t";
-      std::cin >> opcion;
+        std::cout << "Introduzca el fichero con grafo a analizar:\t";
+        std::cin >> fichero;
+        fichero_grafo.open(fichero);
 
 
-      while (opcion != 0) {
-
-          inicializar_solucion(solucion_);
-
-          /*  std::cout << "Introduzca el fichero con grafo a analizar:\t";
-              std::cout << "Introduzca el fichero con la función heurística:\t";
-      */
-
-          std::cout << "Introduzca el nodo inicial y el final:\t";
-          std::cin >> inicial >> final;
-
-          if ((inicial > 0 && inicial <= prueba.get_numero_nodos()) &&
-              (final > 0 && final <= prueba.get_numero_nodos())) {
-
-              prueba.busqueda_A_estrella(1, 9, heuristica, solucion_);
+        std::cout << "Introduzca el fichero con la función heurística:\t";
+        std::cin >> fichero;
+        fichero_heuristica.open(fichero);
 
 
-          } else
-              std::cout << "\nIntroduzca un nodo inicial y final válido\n";
+        Realizar_busqueda(fichero_grafo,fichero_heuristica,solucion_);
+         imprimir_solucion(std::cout, solucion_);
+
+        fichero_grafo.close();
+        fichero_heuristica.close();
 
 
-          std::cout << "Introduzca un 1 para realizar otra búsqueda, un 0 para salir:\t";
-          std::cin >> opcion;
-      }
-  }
+        std::cout << "Introduzca un 1 para realizar otra búsqueda, un 0 para salir:\t";
+        std::cin >> opcion;
+    }
 
 
-      else{
-          std::cerr << "Error abriendo ficheros\n";
-          return (3);
-      }
 
  return(0);
 }

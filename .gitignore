@@ -3,3 +3,4 @@ Busqueda-A-Estrella
 CMakeLists.txt
 cmake-build-debug
 .idea/
+*.swp
