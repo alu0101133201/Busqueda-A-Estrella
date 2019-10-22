@@ -12,6 +12,9 @@ grafo_con_busqueda::~grafo_con_busqueda(){}
 
 
 
+int grafo_con_busqueda::get_numero_nodos(void){
+  return grafo_.get_numero_nodos();
+}
 
 
 
@@ -38,13 +41,16 @@ void grafo_con_busqueda::busqueda_A_estrella(unsigned int inicial, unsigned int 
 
       if(!ya_insertado_en_rama(nodo_seleccionado, data_nodo[i].first)){
 
-        //MEJORA: ----IF HAY UN COSTE MENOR, NO METER------------------
-        nodo_arbol* dummy = generar(data_nodo[i].first, nodo_seleccionado,
-                                   (nodo_seleccionado->get_coste() + data_nodo[i].second), nodo_seleccionado->get_profundidad()+1);
+        if(!ya_insertado(data_nodo[i].first, (nodo_seleccionado->get_coste() + data_nodo[i].second))) {
 
-        hojas.push_back(dummy);
+            nodo_arbol *dummy = generar(data_nodo[i].first, nodo_seleccionado,
+                                        (nodo_seleccionado->get_coste() + data_nodo[i].second),
+                                         nodo_seleccionado->get_profundidad() + 1);
 
-        costes_nodos_provisionales[data_nodo[i].first] = dummy ;
+            hojas.push_back(dummy);
+
+            costes_nodos_provisionales[data_nodo[i].first] = dummy;
+        }
       }
     }
 
@@ -62,8 +68,21 @@ void grafo_con_busqueda::busqueda_A_estrella(unsigned int inicial, unsigned int 
     nodo_seleccionado = (*coste_minimo.first);
     hojas.erase(coste_minimo.first);
 
-
   }
+
+
+  //Rellenamos la estructura solución
+
+  solucion_.coste = nodo_seleccionado->get_coste();
+  solucion_.camino.resize(nodo_seleccionado->get_profundidad()+1);
+
+  for(nodo_arbol* i = nodo_seleccionado; i != nullptr; i = i->get_padre())
+      solucion_.camino[i->get_profundidad()] = i->get_ID();
+
+
+
+
+  //Liberamos la memoria
 
 }
 
@@ -82,6 +101,14 @@ bool grafo_con_busqueda::ya_insertado_en_rama (nodo_arbol* nodo_padre, int ID){
     return true;
 
   ya_insertado_en_rama(nodo_padre->get_padre(),ID);
+}
+
+
+bool grafo_con_busqueda::ya_insertado(int ID, float coste) {
+
+    //Mirar si está reptido si no devolver falsee
+
+
 }
 
 

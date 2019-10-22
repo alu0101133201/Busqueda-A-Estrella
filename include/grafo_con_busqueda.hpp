@@ -36,6 +36,7 @@ class grafo_con_busqueda{
     std::vector<nodo_arbol*> costes_nodos_provisionales;
 
     bool ya_insertado_en_rama(nodo_arbol*, int);
+    bool ya_insertado(int, float);
 
     nodo_arbol* generar(unsigned int, nodo_arbol*, float, int);
 
@@ -45,6 +46,8 @@ class grafo_con_busqueda{
     grafo_con_busqueda(grafo);
 
     ~grafo_con_busqueda();
+
+    int get_numero_nodos();
 
     void busqueda_A_estrella(unsigned int, unsigned int, std::vector<float>&, solucion&);
 
