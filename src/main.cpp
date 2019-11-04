@@ -6,6 +6,7 @@ Programa principal. Práctica 01 - IA
 #include<string>
 #include<fstream>
 #include<chrono>
+#include<iomanip>
 
 #include "grafo.hpp"
 #include "grafo_con_busqueda.hpp"
@@ -41,22 +42,65 @@ void inicializar_solucion(solucion& solucion_){
 
 void imprimir_solucion(std::ostream& os, solucion& solucion_){
 
-  os << "Solución de la búsqueda A estrella\nCoste:\t";
+  os << "Solución de la búsqueda A estrella\n\033[1;33mCoste:\033[0m\t";
   os << solucion_.coste;
-  os << ".  Nodos generados:\t " << solucion_.generados;
-  os << ".  Nodos inspeccionados:\t" << solucion_.inspeccionados;
+  os << ".  \033[1;33mNodos generados:\033[0m\t " << solucion_.generados;
+  os << ".  \033[1;33mNodos inspeccionados:\033[0m\t" << solucion_.inspeccionados;
 
-  os << "\nCamino:\t";
+  os << "\nCamino:\033[1;32m\t";
   for(int i = 0; i < solucion_.camino.size() ; i++)
     os << "(" << solucion_.camino[i] << ") ";
 
-  os << "\n\n";
+  os << "\033[0m\n\n";
+
+}
+
+bool existe_fichero(std::string& filename){
+    std::ifstream fichero(filename.c_str());
+    return(fichero.good());
+}
+
+
+void Rellenar_tabla(solucion& solucion_,std::string &nombre_grafo, grafo& grafo_, unsigned int inicial, unsigned int final){
+
+    std::string file;
+
+    std::cout << "Introduzca el fichero en el que quiere almacenar la solución:\t";
+    std::cin >> file;
+
+    std::ofstream fichero;
+
+    if(!existe_fichero(file)){
+
+        //Creamos fichero
+        fichero.open(file);
+
+        fichero << std::setw(10) << "Instancia" << std::setw(5) << "  n" << std::setw(5) << "  m";
+        fichero << std::setw(5) << "  v0" << std::setw(5) << "  v1" << "    Camino";
+        fichero << std::setw(35) << "\t\tDistancia" << std::setw(15) << "  Nodos generados" << std::setw(15) << "  Nodos inspeccionados\n";
+
+        fichero.close();
+    }
+
+    fichero.open(file, std::ios::app);
+    fichero  << "\n" << std::setw(10) << nombre_grafo.substr(0,nombre_grafo.length()-4);
+    fichero << std::setw(5) << grafo_.get_numero_nodos() << std::setw(5) << grafo_.get_numero_aristas();
+    fichero << std::setw(5) << inicial << std::setw(5) << final << "   |";
+
+    int i;
+
+    for(i = 0 ; i < solucion_.camino.size()-1; i++)
+        fichero << solucion_.camino[i] << " -> ";
+    fichero << solucion_.camino[i] << "|  ";
+
+    fichero << std::setw(15) << solucion_.coste;
+    fichero << std::setw(15) << solucion_.generados << std::setw(15) << solucion_.inspeccionados;
 
 }
 
 //Función que realiza la búsqueda y carga el resultado en solucion. Devuelve true si no ha habido problemas
 
-bool Realizar_busqueda(std::ifstream& pgrafo,std::ifstream& pheuristica, solucion& solucion_){
+bool Realizar_busqueda(std::ifstream& pgrafo,std::ifstream& pheuristica, solucion& solucion_,std::string &nombre_grafo){
 
 
     if(pgrafo.is_open() && pheuristica.is_open()) {
@@ -82,12 +126,20 @@ bool Realizar_busqueda(std::ifstream& pgrafo,std::ifstream& pheuristica, solucio
             auto stop = std::chrono::high_resolution_clock::now();
             auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop-start);
 
-            std::cout << "\nTiempo de ejecución:\t" << duration.count() << " microsegundos\n\n";
+            int almacenar;
+            std::cout << "¿Quiere almacenar el resultado?\t";
+            std::cin >> almacenar;
+            if(almacenar != 0)
+                Rellenar_tabla(solucion_, nombre_grafo,grafo_leido, inicial, final);
+
+
+            std::cout << "\nTiempo de ejecución:\033[1;32m\t" << duration.count() << "\033[0m microsegundos\n\n";
 
             return true;
         }
          else
              std::cout << "\nIntroduzca un nodo inicial y final válido\n";
+             return false;
          }
     else{
 
@@ -129,7 +181,9 @@ int main(int argc, char* argv[]){
 
   std::cout << "--PRÁCTICA 01 BÚSQUEDA A ESTRELLA - IA\n Sergio Guerra Arencibia\n";
 
-  if (Realizar_busqueda(fichero_grafo,fichero_heuristica,solucion_) )
+  std::string aux(argv[1]);
+
+  if (Realizar_busqueda(fichero_grafo,fichero_heuristica,solucion_,aux) )
      imprimir_solucion(std::cout, solucion_);
 
 
@@ -148,7 +202,7 @@ int main(int argc, char* argv[]){
 
     while (opcion != 0) {
 
-        std::string fichero;
+        std::string fichero,fichero_h;
 
         std::cout << "Introduzca el fichero con grafo a analizar:\t";
         std::cin >> fichero;
@@ -156,11 +210,10 @@ int main(int argc, char* argv[]){
 
 
         std::cout << "Introduzca el fichero con la función heurística:\t";
-        std::cin >> fichero;
-        fichero_heuristica.open(fichero);
+        std::cin >> fichero_h;
+        fichero_heuristica.open(fichero_h);
 
-
-        Realizar_busqueda(fichero_grafo,fichero_heuristica,solucion_);
+        if(Realizar_busqueda(fichero_grafo,fichero_heuristica,solucion_,fichero))
          imprimir_solucion(std::cout, solucion_);
 
         fichero_grafo.close();

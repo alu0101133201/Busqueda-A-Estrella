@@ -7,6 +7,7 @@ grafo::grafo(void){}
 grafo::grafo(std::ifstream& file){
 
   double costo_tmp;
+  numero_aristas = 0;
   file >> numero_nodos;
 
   matriz.resize(numero_nodos);
@@ -17,9 +18,10 @@ grafo::grafo(std::ifstream& file){
 
       file >> costo_tmp;
 
-      if(costo_tmp > 0)
-        meter_valor(i,j,costo_tmp);
-
+      if(costo_tmp > 0) {
+          meter_valor(i, j, costo_tmp);
+          numero_aristas++;
+      }
     }
   }
 }
@@ -36,6 +38,10 @@ grafo::~grafo(){};
 
 unsigned int grafo::get_numero_nodos(void) const{
   return numero_nodos;
+}
+
+unsigned int grafo::get_numero_aristas() const {
+    return numero_aristas;
 }
 
 std::vector<std::vector<std::pair<unsigned int, double> > > grafo::get_matriz(void) const{
