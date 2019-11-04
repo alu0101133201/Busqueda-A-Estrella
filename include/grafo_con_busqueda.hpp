@@ -18,6 +18,8 @@ struct solucion{
 
   unsigned int coste;
   std::vector<unsigned int> camino;
+  unsigned int generados;
+  unsigned int inspeccionados;
 
 };
 
@@ -31,13 +33,12 @@ class grafo_con_busqueda{
     grafo grafo_;
 
     std::list<nodo_arbol*> hojas;
+    std::vector<nodo_arbol*> generados;
 
-    //Vector que almacenará los costes mínimos a cada uno de los nodos con el fin de ahorrar meter nodos a los que se han encontrado caminos mejores.
-    std::vector<nodo_arbol*> costes_nodos_provisionales;
+    unsigned int inspeccionados;
+
 
     bool ya_insertado_en_rama(nodo_arbol*, int);
-    bool ya_insertado(int, float);
-
     nodo_arbol* generar(unsigned int, nodo_arbol*, float, int);
 
   public:

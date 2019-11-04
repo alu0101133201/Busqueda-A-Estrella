@@ -4,11 +4,17 @@
 grafo_con_busqueda::grafo_con_busqueda(void){};
 
 grafo_con_busqueda::grafo_con_busqueda(grafo grafo_parametro):
-  grafo_(grafo_parametro),
-  costes_nodos_provisionales(grafo_parametro.get_numero_nodos(),nullptr){}
+  grafo_(grafo_parametro){}
 
 
-grafo_con_busqueda::~grafo_con_busqueda(){}
+grafo_con_busqueda::~grafo_con_busqueda(){
+
+    //Eliminamos todos los nodos. Sus referencias se encuentran en la estructura generados
+    for(int i = 0; i < generados.size(); i++)
+        delete generados[i];
+
+
+}
 
 
 
@@ -23,66 +29,63 @@ int grafo_con_busqueda::get_numero_nodos(void){
 void grafo_con_busqueda::busqueda_A_estrella(unsigned int inicial, unsigned int final, std::vector<float> &heuristica, solucion& solucion_){
 
   inicial--; final-- ; //trabajamos con indices de 0 a n-1
+  inspeccionados = 0;
 
   nodo_arbol* nodo_seleccionado = generar(inicial,nullptr, 0, 0); //Nodo inicial
   std::pair< std::list<nodo_arbol*>::iterator ,float> coste_minimo; //Estructura para la selección de nodo a analizar
 
-  costes_nodos_provisionales[inicial] = nodo_seleccionado;
+  generados.push_back(nodo_seleccionado);
 
   //--ITERACIONES DEL ALGORITMO--------------------------------------
 
-  while(nodo_seleccionado->get_ID() != final){
+  while(nodo_seleccionado->get_ID() != final) {
 
-    coste_minimo.second = FLT_MAX;
-    std::vector<std::pair<unsigned int, double> > data_nodo = grafo_.get_data(nodo_seleccionado->get_ID());
+      coste_minimo.second = FLT_MAX;
+      std::vector<std::pair<unsigned int, double> > data_nodo = grafo_.get_data(nodo_seleccionado->get_ID());
 
-    //Insertamos los nodos necesarios en esta iteración
-    for(int i = 0; i < data_nodo.size() ; i++){
+      inspeccionados++;
 
-      if(!ya_insertado_en_rama(nodo_seleccionado, data_nodo[i].first)){
+      //Insertamos los nodos necesarios en esta iteración
+      for (int i = 0; i < data_nodo.size(); i++) {
 
-        if(!ya_insertado(data_nodo[i].first, (nodo_seleccionado->get_coste() + data_nodo[i].second))) {
+          if (!ya_insertado_en_rama(nodo_seleccionado, data_nodo[i].first)) {
 
-            nodo_arbol *dummy = generar(data_nodo[i].first, nodo_seleccionado,
-                                        (nodo_seleccionado->get_coste() + data_nodo[i].second),
-                                         nodo_seleccionado->get_profundidad() + 1);
+              nodo_arbol *dummy = generar(data_nodo[i].first, nodo_seleccionado,
+                                          (nodo_seleccionado->get_coste() + data_nodo[i].second),
+                                          nodo_seleccionado->get_profundidad() + 1);
 
-            hojas.push_back(dummy);
+              hojas.push_back(dummy);
 
-            costes_nodos_provisionales[data_nodo[i].first] = dummy;
-        }
+              generados.push_back(dummy);
+          }
       }
-    }
 
-    //Buscamos siguiente nodo a analizar
-    for(std::list<nodo_arbol*>::iterator i = hojas.begin(); i != hojas.end(); i++){
 
-      float tmp = (*i)->get_coste() + heuristica[(*i)->get_ID()];
+      //Buscamos siguiente nodo a analizar
+      for (std::list<nodo_arbol *>::iterator i = hojas.begin(); i != hojas.end(); i++) {
 
-      if( tmp < coste_minimo.second){
-        coste_minimo.first = i;
-        coste_minimo.second = tmp;
+          float tmp = (*i)->get_coste() + heuristica[(*i)->get_ID()];
+
+          if (tmp < coste_minimo.second) {
+              coste_minimo.first = i;
+              coste_minimo.second = tmp;
+          }
       }
-    }
 
-    nodo_seleccionado = (*coste_minimo.first);
-    hojas.erase(coste_minimo.first);
+
+      nodo_seleccionado = (*coste_minimo.first);
+      hojas.erase(coste_minimo.first);
 
   }
-
-
   //Rellenamos la estructura solución
 
   solucion_.coste = nodo_seleccionado->get_coste();
+  solucion_.generados = generados.size();
+  solucion_.inspeccionados = inspeccionados;
   solucion_.camino.resize(nodo_seleccionado->get_profundidad()+1);
 
   for(nodo_arbol* i = nodo_seleccionado; i != nullptr; i = i->get_padre())
-      solucion_.camino[i->get_profundidad()] = i->get_ID();
-
-
-
-
-  //Liberamos la memoria
+      solucion_.camino[i->get_profundidad()] = i->get_ID()+1;
 
 }
 
@@ -104,12 +107,7 @@ bool grafo_con_busqueda::ya_insertado_en_rama (nodo_arbol* nodo_padre, int ID){
 }
 
 
-bool grafo_con_busqueda::ya_insertado(int ID, float coste) {
 
-    //Mirar si está reptido si no devolver falsee
-
-
-}
 
 
 

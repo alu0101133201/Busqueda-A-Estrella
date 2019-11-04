@@ -5,6 +5,7 @@ Programa principal. Práctica 01 - IA
 #include<iostream>
 #include<string>
 #include<fstream>
+#include<chrono>
 
 #include "grafo.hpp"
 #include "grafo_con_busqueda.hpp"
@@ -42,6 +43,8 @@ void imprimir_solucion(std::ostream& os, solucion& solucion_){
 
   os << "Solución de la búsqueda A estrella\nCoste:\t";
   os << solucion_.coste;
+  os << ".  Nodos generados:\t " << solucion_.generados;
+  os << ".  Nodos inspeccionados:\t" << solucion_.inspeccionados;
 
   os << "\nCamino:\t";
   for(int i = 0; i < solucion_.camino.size() ; i++)
@@ -73,7 +76,14 @@ bool Realizar_busqueda(std::ifstream& pgrafo,std::ifstream& pheuristica, solucio
 
         if ((inicial > 0 && inicial <= grafo_A_estrella.get_numero_nodos()) && (final > 0 && final <= grafo_A_estrella.get_numero_nodos())){
 
+            auto start = std::chrono::high_resolution_clock::now();
             grafo_A_estrella.busqueda_A_estrella(inicial, final, heuristica, solucion_);
+
+            auto stop = std::chrono::high_resolution_clock::now();
+            auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop-start);
+
+            std::cout << "\nTiempo de ejecución:\t" << duration.count() << " microsegundos\n\n";
+
             return true;
         }
          else
